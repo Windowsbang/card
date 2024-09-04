@@ -1,0 +1,245 @@
+:root {
+    --vw: 500px;
+    --vh: 308px;
+    --border-width: 10px;
+    --border-color1: #062757;
+    --border-color2: #e4c8a1;
+    --border-color3: #9f0607;
+    --inner-bgcolor: #e9ca8a;
+    --lr-bgcolor: #ead2ac;
+    --top-bgcolor: #e5d4b8;
+    --bottom-bgcolor: #e5c9a2;
+}
+
+body {
+    font-family: "font";
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#dialog {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+#envelope {
+    width: var(--vw);
+    height: var(--vh);
+    margin: 350px auto;
+    box-sizing: border-box;
+    background-color: var(--inner-bgcolor);
+    position: relative;
+    animation: none;
+}
+
+@keyframes slideInY {
+    0% {
+        top: -800px;
+        transform: rotate(45deg);
+    }
+
+    100% {
+        top: 0px;
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes slideInX {
+    0% {
+        left: -800px;
+    }
+
+    100% {
+        left: 0px;
+    }
+}
+
+.bottom,
+.top {
+    position: absolute;
+    left: 0;
+    width: var(--vw);
+}
+
+.bottom {
+    bottom: 0;
+    height: 230px;
+    -webkit-clip-path: polygon(50% 42%, 0% 100%, 100% 100%);
+    clip-path: polygon(50% 42%, 0% 100%, 100% 100%);
+    background-color: var(--bottom-bgcolor);
+    z-index: 2;
+}
+
+.top {
+    top: 0;
+    height: 215px;
+    background-color: var(--top-bgcolor);
+    -webkit-clip-path: polygon(50% 120%, 100% 0, 0 0);
+    clip-path: polygon(50% 120%, 100% 0, 0 0);
+    z-index: 3;
+    transform-origin: top;
+    animation: none;
+}
+
+.left,
+.right {
+    position: absolute;
+    top: 0;
+    width: var(--vh);
+    height: var(--vh);
+    background-color: var(--lr-bgcolor);
+    z-index: 1;
+}
+
+.left {
+    left: 0;
+    -webkit-clip-path: polygon(100% 100%, 0 0, 0 100%);
+    clip-path: polygon(100% 100%, 0 0, 0 100%);
+}
+
+.right {
+    right: 0;
+    -webkit-clip-path: polygon(100% 100%, 100% 0, 0 100%);
+    clip-path: polygon(100% 100%, 100% 0, 0 100%);
+}
+
+/*封边条纹*/
+.bottom::before,
+.top::before,
+.right::before,
+.left::before {
+    position: absolute;
+    content: "";
+    display: block;
+    background-image: repeating-linear-gradient(-45deg, var(--border-color1) 0, var(--border-color1) 25px, var(--border-color2) 25px, var(--border-color2) 50px, var(--border-color3) 50px, var(--border-color3) 75px, var(--border-color2) 75px, var(--border-color2) 100px);
+}
+
+.bottom::before,
+.top::before {
+    width: var(--vw);
+    height: var(--border-width);
+    left: 0;
+}
+
+.bottom::before {
+    bottom: 0;
+}
+
+.top::before {
+    top: 0;
+    --border-color2: #e5d4b8;
+    animation: none;
+    transform-origin: top;
+}
+
+.left::before,
+.right::before {
+    top: 0;
+    width: var(--border-width);
+    height: var(--vw);
+    --border-color2: #ead2ac;
+}
+
+.left::before {
+    left: 0;
+}
+
+.right::before {
+    right: 0;
+}
+
+@keyframes open {
+    80% {
+        z-index: 3;
+    }
+
+    100% {
+        transform: rotateX(-180deg);
+        background-color: rgba(233, 202, 138, 1);
+        clip-path: polygon(50% 90%, 100% 0, 0 0);
+        z-index: -1;
+    }
+}
+
+@keyframes openBorder {
+    100% {
+        transform: rotateX(-180deg);
+        opacity: 0;
+    }
+}
+
+/*信纸*/
+#message {
+    font-family: "font";
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    transform: rotate(5deg);
+    width: 390px;
+    height: 200px;
+    background-color: #fff;
+    animation: none;
+    z-index: 0;
+    padding: 20px;
+    font-size: 15px;
+}
+
+@keyframes rise {
+    /*纸张上升*/
+    100% {
+        height: 450px;
+        top: -250px;
+        transform: rotate(-10deg);
+    }
+}
+
+@font-face {
+    font-family: "font";
+    src: url(/assets/fonts/LXGW.ttf);
+}
+
+#inputDialog {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+#openButton {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 5;
+}
+
+@keyframes open {
+    from {
+        transform: rotateX(0deg);
+    }
+    to {
+        transform: rotateX(180deg);
+        z-index: -1;
+    }
+}
