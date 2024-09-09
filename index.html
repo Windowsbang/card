@@ -7,43 +7,124 @@
     <meta name="Copyright" content="2022届17班信息部" />
     <link rel="stylesheet" type="text/css" href="assets/css/index.css">
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('inputDialog').style.display = 'block';
-    });
-    
-    function openEnvelope() {
-        var surname = document.getElementById('teacherSurname').value.trim();
-        if (surname) {
-            var message = document.getElementById('message');
-            message.innerHTML = '敬爱的' + surname + '老师：<br><br>今天是您的节日——教师节。在这个特别的日子里，我向您表达我最诚挚的祝福。老师，您不仅教给我们知识，还教给我们做人的道理，让我们懂得如何成为一个有道德、有责任感、有担当的人。您用最真挚的关怀和最用心的教学陪伴我们度过每一个难关，为我们的成长和发展奠定了坚实的基础。亲爱的' + surname + '老师，祝您教师节快乐！感谢您为我们所做的一切，我们将永远怀念您的恩情和付出。愿您身体健康，心情愉快，继续在教育事业上发挥您的优势，为更多的学生带来光明和希望。<br><br><p align="right">2022届17班全体同学</p>';
-            document.getElementById('inputDialog').style.display = 'none';
-            document.getElementById('openButton').style.display = 'block';
-        } else {
-            alert('请输入老师姓氏');
-        }
-    }
-    function triggerAnimation() {
-    // 首先，确保顶部封口的动画是第一个开始的
-    document.querySelector('.top').style.animation = 'open 2s ease-in-out forwards';
-    setTimeout(function() {
-        // 等待顶部封口动画开始后，再开始信封打开的动画
-        document.getElementById('envelope').style.animation = 'openEnvelope 2s ease-in-out forwards';
-        // 同时，设置信纸的动画，延迟2秒开始，以确保它在信封打开后开始
-        document.getElementById('message').style.animation = 'rise 2s ease-in-out 2s forwards';
-    }, 200); // 200ms 延迟可以根据实际情况调整
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        class Particle {
+            constructor(x, y, color, velocityX, velocityY) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.velocityX = velocityX;
+                this.velocityY = velocityY;
+                this.radius = 2.5;
+                this.opacity = 1;
+            }
 
-    // 隐藏开启按钮
-    document.getElementById('openButton').style.display = 'none';
-}
+            update() {
+                this.x += this.velocityX;
+                this.y += this.velocityY;
+                this.velocityY += 0.1;
+                this.opacity -= 0.01;
+            }
+
+            draw(ctx) {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+            }
+        }
+        class Firework {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.particles = [];
+                for (let i = 0; i < 50; i++) {
+                    const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                    const velocityX = (Math.random() - 0.5) * 6;
+                    const velocityY = Math.random() * -15;
+                    this.particles.push(new Particle(x, y, color, velocityX, velocityY));
+                }
+            }
+
+            update() {
+                this.particles.forEach(particle => particle.update());
+            }
+
+            draw(ctx) {
+                this.particles.forEach(particle => particle.draw(ctx));
+            }
+        }
+        let fireworks = [];
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            fireworks.forEach((firework, index) => {
+                if (firework.particles[0].opacity <= 0) {
+                    fireworks.splice(index, 1);
+                } else {
+                    firework.update();
+                    firework.draw(ctx);
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+        canvas.addEventListener('click', (event) => {
+            const x = event.clientX;
+            const y = event.clientY;
+            fireworks.push(new Firework(x, y));
+        });
+
+        // 启动动画
+        animate();
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('inputDialog').style.display = 'block';
+        });
+
+        function openEnvelope() {
+            var surname = document.getElementById('teacherSurname').value.trim();
+            if (surname) {
+                var message = document.getElementById('message');
+                message.innerHTML = '敬爱的' + surname + '老师：<br><br>今天是您的节日——教师节。在这个特别的日子里，我向您表达我最诚挚的祝福。老师，您不仅教给我们知识，还教给我们做人的道理，让我们懂得如何成为一个有道德、有责任感、有担当的人。您用最真挚的关怀和最用心的教学陪伴我们度过每一个难关，为我们的成长和发展奠定了坚实的基础。亲爱的' + surname + '老师，祝您教师节快乐！感谢您为我们所做的一切，我们将永远怀念您的恩情和付出。愿您身体健康，心情愉快，继续在教育事业上发挥您的优势，为更多的学生带来光明和希望。<br><br><p align="right">2022届17班全体同学</p>';
+                document.getElementById('inputDialog').style.display = 'none';
+                document.getElementById('openButton').style.display = 'block';
+            } else {
+                alert('请输入老师姓氏');
+            }
+        }
+        function triggerAnimation() {
+            // 首先，确保顶部封口的动画是第一个开始的
+            document.querySelector('.top').style.animation = 'open 2s ease-in-out forwards';
+            setTimeout(function () {
+                // 等待顶部封口动画开始后，再开始信封打开的动画
+                document.getElementById('envelope').style.animation = 'openEnvelope 2s ease-in-out forwards';
+                // 同时，设置信纸的动画，延迟2秒开始，以确保它在信封打开后开始
+                document.getElementById('message').style.animation = 'rise 2s ease-in-out 2s forwards';
+            }, 200); // 200ms 延迟可以根据实际情况调整
+
+            // 隐藏开启按钮
+            document.getElementById('openButton').style.display = 'none';
+        }
     </script>
 </head>
 
 <body>
-    <div id="inputDialog" style="display: block; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5); z-index: 10;">
+    <div id="inputDialog"
+        style="display: block; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5); z-index: 10;">
         <input type="text" id="teacherSurname" placeholder="请输入老师姓氏">
         <button onclick="openEnvelope()">确定</button>
     </div>
-    <button id="openButton" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 5;" onclick="triggerAnimation()">开启</button>
+    <button id="openButton"
+        style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 5;"
+        onclick="triggerAnimation()">开启</button>
     <div id="dialog">
         <div id="envelope">
             <div id="message"></div>
@@ -53,6 +134,7 @@
             <div class="right"></div>
         </div>
     </div>
+    <canvas id="fireworksCanvas"></canvas>
 </body>
 
 </html>
